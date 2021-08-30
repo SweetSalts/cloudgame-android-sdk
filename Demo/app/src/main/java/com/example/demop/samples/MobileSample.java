@@ -8,7 +8,6 @@ import android.util.Log;
 import com.example.demop.BaseActivity;
 import com.example.demop.Constant;
 import com.example.demop.R;
-import com.tencent.tcgsdk.api.ITcgListener;
 import com.tencent.tcgsdk.api.LogLevel;
 import com.tencent.tcgsdk.api.ScaleType;
 import com.tencent.tcgsdk.api.mobile.Configuration;
@@ -116,7 +115,7 @@ public class MobileSample extends BaseActivity {
      * 启动云游戏, 云端实例启动成功后会回调onStartExperience
      *
      * @param clientSession 用于云端初始化的client session
-     * @see SimpleSample#onStartExperience(String)
+     * @see SimpleSample#onStartGame(String)
      */
     protected void start(String clientSession) {
         Log.i(Constant.TAG, "start client Session");
@@ -124,12 +123,18 @@ public class MobileSample extends BaseActivity {
         // 客户端接入时需要在自己的业务后台返回ServerSession
         // 业务后台的API请参考:
         // https://cloud.tencent.com/document/product/1162/40740
-        super.startExperience(Constant.MOBILE_EXPIRATION_CODE, clientSession);
+        super.startGame(Constant.MOBILE_GAME_CODE, clientSession);
     }
 
     @Override
-    public void onStartExperience(String serverSession) {
+    public void onStartGame(String serverSession) {
         //　启动游戏
         mSDK.start(serverSession);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant.TAG, "onDestroy: ");
     }
 }

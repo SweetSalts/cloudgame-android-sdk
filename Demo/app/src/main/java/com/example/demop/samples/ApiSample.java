@@ -78,18 +78,18 @@ public class ApiSample extends BaseActivity {
      * 启动云游戏, 云端实例启动成功后会回调onStartExperience
      *
      * @param clientSession 用于云端初始化的client session
-     * @see ApiSample#onStartExperience(String)
+     * @see ApiSample#onStartGame(String)
      */
     protected void start(String clientSession) {
         // 以下请求ServerSession的后端支持是云游团队的体验服务
         // 客户端接入时需要在自己的业务后台返回ServerSession
         // 业务后台的API请参考:
         // https://cloud.tencent.com/document/product/1162/40740
-        super.startExperience(Constant.PC_EXPIRATION_CODE, clientSession);
+        super.startGame(Constant.PC_GAME_CODE, clientSession);
     }
 
     @Override
-    public void onStartExperience(String serverSession) {
+    public void onStartGame(String serverSession) {
         //　启动游戏
         mSDK.start(serverSession);
     }
@@ -279,5 +279,11 @@ public class ApiSample extends BaseActivity {
             String data2beRead = charset.decode(buffer.data).toString();
             TLog.d(Constant.TAG, "receive data:" + data2beRead);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant.TAG, "onDestroy: ");
     }
 }

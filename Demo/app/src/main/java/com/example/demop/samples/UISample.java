@@ -133,7 +133,7 @@ public class UISample extends BaseActivity {
 
 
     @Override
-    public void onStartExperience(String serverSession) {
+    public void onStartGame(String serverSession) {
         mSDK.start(serverSession);
     }
 
@@ -141,7 +141,7 @@ public class UISample extends BaseActivity {
      * 启动云游戏, 云端实例启动成功后会回调onStartExperience
      *
      * @param clientSession 用于云端初始化的client session
-     * @see ApiSample#onStartExperience(String)
+     * @see ApiSample#onStartGame(String)
      */
     protected void start(String clientSession) {
         Log.i(Constant.TAG, "start client Session");
@@ -149,6 +149,12 @@ public class UISample extends BaseActivity {
         // 客户端接入时需要在自己的业务后台返回ServerSession
         // 业务后台的API请参考:
         // https://cloud.tencent.com/document/product/1162/40740
-        super.startExperience(Constant.PC_EXPIRATION_CODE, clientSession);
+        super.startGame(Constant.PC_GAME_CODE, clientSession);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(Constant.TAG, "onDestroy: ");
     }
 }

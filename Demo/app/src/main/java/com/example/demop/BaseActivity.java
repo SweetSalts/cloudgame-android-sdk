@@ -6,9 +6,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.demop.expirtationcode.CloudGameApi;
-import com.example.demop.expirtationcode.bean.ExperienceCodeResp;
+import com.example.demop.server.CloudGameApi;
+import com.example.demop.server.param.ServerResponse;
 import com.google.gson.Gson;
+import org.json.JSONObject;
 
 public abstract class BaseActivity extends AppCompatActivity {
     // 云游体验后台交互接口
@@ -20,6 +21,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         initWindow();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mCloudGameApi.stopGame();
+    }
+
     // 窗口全屏
     private void initWindow() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -27,21 +34,21 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     // 获取到服务端server session的回调
-    public abstract void onStartExperience(String serverSession);
+    public abstract void onStartGame(String serverSession);
 
-    // 开始体验: 获取服务端server session
-    protected void startExperience(String experienceCode, String clientSession) {
-        Log.i(Constant.TAG, "start experience");
+    // 开始游戏: 获取服务端server session
+    protected void startGame(String gameCode, String clientSession) {
+        Log.i(Constant.TAG, "start game");
         mCloudGameApi = new CloudGameApi(this);
-        mCloudGameApi.startExperience(experienceCode, clientSession, new CloudGameApi.IServerSessionListener() {
+        mCloudGameApi.startGame(gameCode, clientSession, new CloudGameApi.IServerSessionListener() {
             @Override
-            public void onSuccess(String result) {
-                Log.i(Constant.TAG, result);
-                ExperienceCodeResp resp = new Gson().fromJson(result, ExperienceCodeResp.class);
+            public void onSuccess(JSONObject result) {
+                Log.i(Constant.TAG, "onSuccess: " + result);
+                ServerResponse resp = new Gson().fromJson(result.toString(), ServerResponse.class);
                 if (resp.Code == 0) {
-                    onStartExperience(resp.ServerSession);
+                    onStartGame(resp.ServerSession);
                 } else {
-                    Toast.makeText(BaseActivity.this, result, Toast.LENGTH_LONG).show();
+                    Toast.makeText(BaseActivity.this, result.toString(), Toast.LENGTH_LONG).show();
                 }
             }
 
